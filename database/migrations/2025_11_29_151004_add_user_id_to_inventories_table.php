@@ -6,23 +6,33 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
-{
-    Schema::table('documents', function (Blueprint $table) {
-        $table->enum('status', ['aktif', 'tidak aktif'])->default('aktif')->after('diperingatkan_h');
-        $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade')->after('status');
-    });
-}
+    {
+        Schema::table('documents', function (Blueprint $table) {
 
-public function down(): void
-{
-    Schema::table('documents', function (Blueprint $table) {
-        $table->dropColumn('status');
-        $table->dropForeign(['user_id']);
-        $table->dropColumn('user_id');
-    });
-}
+            // Jangan tambah status lagi kalau sudah ada
+            if (!Schema::hasColumn('documents', 'status')) {
+                $table->enum('status', ['aktif', 'tidak aktif'])->default('aktif');
+            }
+
+            // Tambah user_id kalau belum ada (tanpa FK dulu)
+            if (!Schema::hasColumn('documents', 'user_id')) {
+                $table->unsignedBigInteger('user_id')->nullable();
+            }
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('documents', function (Blueprint $table) {
+
+            if (Schema::hasColumn('documents', 'user_id')) {
+                $table->dropColumn('user_id');
+            }
+
+            if (Schema::hasColumn('documents', 'status')) {
+                $table->dropColumn('status');
+            }
+        });
+    }
 };
