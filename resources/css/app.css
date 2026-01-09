@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+    display: none;
+}
+
+/* Jarak antara control dan tabel */
+.dataTables_wrapper .dataTables_filter {
+    @apply mb-3; /* Margin bawah search box */
+}
+
+.dataTables_wrapper .dataTables_length {
+    @apply mb-3; /* Margin bawah dropdown "Show entries" */
+}
+
+.dataTables_length select {
+    padding: 4px 8px;
+    min-width: 60px; /* biar angka sama tanda panah nggak nabrak */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
