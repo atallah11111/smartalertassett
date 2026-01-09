@@ -6,31 +6,31 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Tambahkan kolom 'provider' (misal: google)
-            $table->string('provider')->nullable();
 
-            // Tambahkan kolom 'provider_id' (ID unik dari Google)
-            $table->string('provider_id')->nullable();
+            if (!Schema::hasColumn('users', 'provider')) {
+                $table->string('provider')->nullable();
+            }
 
-            // Tambahkan indeks untuk pencarian cepat
-            $table->index(['provider', 'provider_id']);
+            if (!Schema::hasColumn('users', 'provider_id')) {
+                $table->string('provider_id')->nullable();
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropIndex(['provider', 'provider_id']);
-            $table->dropColumn(['provider', 'provider_id']);
+
+            if (Schema::hasColumn('users', 'provider_id')) {
+                $table->dropColumn('provider_id');
+            }
+
+            if (Schema::hasColumn('users', 'provider')) {
+                $table->dropColumn('provider');
+            }
         });
     }
 };
